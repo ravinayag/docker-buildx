@@ -7,15 +7,11 @@ on:
     branches: [ main ]
 
 env:
-  # Use docker.io for Docker Hub if empty
   REGISTRY: dockerhub.io
-  # github.repository as <account>/<repo>
-  IMAGE_NAME: ${{ github.repository }}
 
 jobs:
 
   build:
-
     runs-on: ubuntu-latest
 
     steps:
@@ -24,16 +20,17 @@ jobs:
       run: docker build . --file Dockerfile --tag ravinayag/docker-buildx:$(date +%m)      
     - run: docker tag ravinayag/docker-buildx:$(date +%m) ravinayag/docker-buildx:latest
     - run: docker image ls
-  
     - name: Log into registry ${{ env.REGISTRY }}
       uses: docker/login-action@v1
       with:
         username: ${{ secrets.DOCKERHUB_USER }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}      
-        
     - name: Build and push
+      id: docker_build
       uses: docker/build-push-action@v2
       with:
           context: .
           push: true
           tags: ravinayag/docker-buildx:latest    
+    - name: Image digest
+      run: echo ${{ steps.docker_build.outputs.digest }}          
