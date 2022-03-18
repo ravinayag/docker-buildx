@@ -21,9 +21,9 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag ravinayag/docker-buildx:$(date +%s)
-      
-    - run: docker tag ravinayag/docker-buildx:$(date +%s) ravinayag/docker-buildx:latest
+      run: docker build . --file Dockerfile --tag ravinayag/docker-buildx:$(date +%m)      
+    - run: docker tag ravinayag/docker-buildx:$(date +%m) ravinayag/docker-buildx:latest
+    - run: docker image ls
   
     - name: Log into registry ${{ env.REGISTRY }}
       #if: github.event_name != 'pull_request'
